@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <vector>
+#include <io.h>
+#include <windows.h>
 using namespace std;
 
 string TransName(string str)
@@ -31,11 +33,9 @@ string filetype(string str)
 	return str.substr(p+1);
 }
 
-int system(const string &str)
+inline int rename(const string &oldname,const string &newname)
 {
-	//cout<<str<<endl;
-	//return 0;
-	return system(str.c_str());
+	return rename(oldname.c_str(),newname.c_str());
 }
 
 //LaTeX可能用到的所有文件
@@ -62,12 +62,9 @@ int main(int argc,char **argv0)
 		filename=filename.substr(0,filename.size()-4);
 	}
 	string newname=TransName(filename);
-	
 	for(auto i:relevantfiles)
 	{
-		
-		system("del "+newname+i);
-		system("copy "+filename+i+" "+newname+i);
+		CopyFile((filename+i).c_str(),(newname+i).c_str(),false);
 	}
 	string arg="xelatex ";
 	for(int i=1;i<argv.size()-1;i++)
@@ -75,18 +72,18 @@ int main(int argc,char **argv0)
 		arg+=argv[i];
 		arg+=" ";
 	}
-	//0：正常
-	//1：报错
+	//0：正常 1：报错
 	int returnval=system(arg+newname+".tex");
 	for(auto i:relevantfiles)
 	{
 		if(i!=".tex")
-		{	system("del "+filename+i);
-			system("ren "+newname+i+" "+filename+i);
+		{	
+			DeleteFile((filename+i).c_str());
+			rename(newname+i,filename+i);
 		}
 		else
 		{
-			system("del "+newname+i);
+			DeleteFile((newname+i).c_str());
 		}
 	}
 	return returnval;
