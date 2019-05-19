@@ -1,22 +1,27 @@
 # CFNTeX——允许使用中文文件名的LaTeX
 多数LaTeX发行版不允许使用含有中文的文件名。CFNTeX是针对XeLaTeX的“补丁”，允许用户在XeLaTeX中使用中文文件名。
-```tex
-%编译后的文件为README.pdf
-\documentclass{ctexart}
-\usepackage{geometry}
-\usepackage{xltxtra}
-\usepackage[hidelinks,unicode]{hyperref}
-\setCJKmainfont{Source Han Serif SC}
-\geometry{a4paper,hmargin=2.5cm,vmargin=2cm}
-\newcommand{\CFNTeX}{{CFN\TeX}}
-\renewcommand{\today}{2019年5月19日}
-\pagestyle{empty}
-\begin{document}
-\title{\bf \CFNTeX\\\flushright\Large——允许使用中文文件名的\LaTeX}
-\author{WCI of QM and RA}
-\date{\today}
-\maketitle
+## 测试版
 
-多数\LaTeX 发行版不允许使用含有中文的文件名。\CFNTeX 是针对\XeLaTeX 的“补丁”，允许用户在\XeLaTeX 中使用中文文件名。
-\end{document}
-```
+**使用方法**
+
+> CFNTeX没有直接修改XeLaTeX的可执行程序使之支持中文文件名，而是在调用XeLaTeX编译之前，将所有可能用到的文件的文件名更改为只含有英文、下划线、数字的文件名，在编译结束后，将XeLaTeX生成的所有文件的文件名更改为原始的文件名。
+
+> 使用CFNTeX，只需将其可执行文件复制的TeX的可执行文件目录中，在编译时使用“cfntex”。
+
+### 0.1
+
+#### 0.1.0.0
+
+**发布日期** 2019年5月19日
+
+**特征**
+
+-   只适用于Windows操作系统。
+
+-   使用system函数的copy、ren、del命令修改文件，控制台输出中含有这三个命令的提示信息。
+
+-   只允许主文件（即被编译的.tex文件）的文件名中含有中文，使用\\input、\\include等命令引入的文件的文件名不允许包含中文。
+
+-   输出的日志文件的文件名与实际文件名不一致，导致TeX编辑器"跳转到源""跳转到PDF"指令失效。
+
+-   编译命令的结尾必须是文件名（即不允许使用"cfntex -help"）。
